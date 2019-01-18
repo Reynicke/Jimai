@@ -29,7 +29,7 @@ function getWorklogs(date) {
 function getIssueList(data) {
   const issues = {};
   for (let i = 0; i < data.issues.length; i++) {
-    issues[data.issues[i].id] = {
+    issues['id_' + data.issues[i].id] = {
       key: data.issues[i].key,
       summary: data.issues[i].fields.summary,
       url: data.issues[i].self,
