@@ -35,7 +35,7 @@ async function writeWorklogs(worklogs, dateStr) {
       const date = formatDate(dateStr);
       const from = date + ' ' + formatTime(timeMarker);
       const to = date + ' ' + formatTime(timeMarker += wlTime);
-      const description = `[${worklog.key}] ${worklog.summary}`;
+      const description = worklog.comment;
 
       counter++;
       addWorklog(worklog, from, to, description)

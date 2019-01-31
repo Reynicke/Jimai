@@ -19,12 +19,14 @@ module.exports = {
     default: {
       projectId: 1,
       taskId: 1,
-      label: 'SOME TEXT'
+      label: 'SOME TEXT',
+      textPattern: '[key]#[summary]#'
     },
     'PROJ-1': {
       projectId: 1,
       taskId: 2,
-      label: 'SOME TEXT'
+      label: 'SOME TEXT',
+      textPattern: '[key]'
     }
   }
 };

@@ -29,28 +29,39 @@ jira.getWorklogs(date).then((worklogs) => {
 });
 
 
-function mapJiraToKimai(worklogs) {
-  Object.keys(worklogs).forEach((id) => {
-    const worklog = worklogs[id];
+function mapJiraToKimai(issues) {
+  Object.keys(issues).forEach((id) => {
+    const issue = issues[id];
     let mapKey = 'default';
-    if (worklog.key in config.mapping) {
-      mapKey = worklog.key;
+    if (issue.key in config.mapping) {
+      mapKey = issue.key;
     }
-    Object.assign(worklog, config.mapping[mapKey]);
+    Object.assign(issue, config.mapping[mapKey]);
+
+    issue.comment = createComment(issue);
   });
 }
 
-function preview(worklogs) {
+function createComment(issue) {
+  let comment = issue.textPattern;
+  Object.keys(issue).forEach((key) => {
+    comment = comment.replace(`[${key}]`, issue[key]);
+  });
+  return comment;
+}
+
+function preview(issues) {
   let totalTime = 0;
-  Object.keys(worklogs).forEach((id) => {
-    const worklog = worklogs[id];
-    const from = `${worklog.key} ${worklog.summary}`;
-    const to = `${worklog.label}`;
-    const durationSum = worklog.worklogs.reduce((a, b) => a + b, 0);
-    const duration = `${durationSum}h (${worklog.worklogs.join(', ')})`;
+  Object.keys(issues).forEach((id) => {
+    const issue = issues[id];
+    const from = `${issue.key} ${issue.summary}`;
+    const to = `${issue.label}`;
+    const durationSum = issue.worklogs.reduce((a, b) => a + b, 0);
+    const duration = `${durationSum}h (${issue.worklogs.join(', ')})`;
+    const comment = issue.comment;
     totalTime += durationSum;
 
-    console.log('[\n Time:\t', duration, '\n Jira:\t', from, '\n Kimai:\t', to, '\n]');
+    console.log('[\n Time:\t', duration, '\n Jira:\t', from, '\n Kimai:\t', to, '\n Comm.:\t', comment, '\n]');
   });
   console.log(' Total Time:', totalTime + 'h');
 }

@@ -53,6 +53,9 @@ function findWorklogsFromIssues(issues, date) {
                 log.author.key === config.jiraUserName && log.created.indexOf(date) === 0
             );
             issue.worklogs = ownersWorklogs.map((log) => log.timeSpentSeconds / 3600);
+            issue.worklogsCreated = ownersWorklogs.map((log) => log.created);
+            issue.worklogsComment = ownersWorklogs.map((log) => log.comment);
+
             if (!issue.worklogs.length) {
               delete issues[id];
             }
