@@ -50,7 +50,7 @@ function findWorklogsFromIssues(issues, date) {
           .end(function (response) {
             const allWorklogs = response.body.fields.worklog.worklogs;
             const ownersWorklogs = allWorklogs.filter((log) =>
-                log.author.key === config.jiraUserName && log.created.indexOf(date) === 0
+                log.author.key === config.jiraUserName && log.started.indexOf(date) === 0
             );
             issue.worklogs = ownersWorklogs.map((log) => log.timeSpentSeconds / 3600);
             issue.worklogsCreated = ownersWorklogs.map((log) => log.created);
