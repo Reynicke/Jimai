@@ -47,8 +47,14 @@ function findWorklogsFromIssues(issues, date) {
       unirest.get(issue.url)
           .auth(config.jiraAuth)
           .headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
-          .end(function (response) {
-            const allWorklogs = response.body.fields.worklog.worklogs;
+          .end(async function (response) {
+            let allWorklogs;
+            if (response.body.fields.worklog.total > response.body.fields.worklog.maxResults) {
+              allWorklogs = await getAllWorklogs(issue);
+            } else {
+              allWorklogs = response.body.fields.worklog.worklogs;
+            }
+
             const ownersWorklogs = allWorklogs.filter((log) =>
                 log.author.key === config.jiraUserName && log.started.indexOf(date) === 0
             );
@@ -66,6 +72,18 @@ function findWorklogsFromIssues(issues, date) {
           });
     })
   });
+}
+
+function getAllWorklogs(issue) {
+  // GET https://winedock.atlassian.net/rest/api/latest/issue/bps-154/worklog
+  return new Promise((resolve) => {
+    unirest.get(issue.url + '/worklog')
+        .auth(config.jiraAuth)
+        .headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
+        .end(function (response) {
+          resolve(response.body.worklogs);
+        });
+  })
 }
 
 module.exports = {
