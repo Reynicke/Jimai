@@ -7,7 +7,7 @@ setConfig = (c) => {
 
 function getWorklogs(date) {
   return new Promise((resolve) => {
-    const jql = `project = ${config.project} AND worklogAuthor = ${config.jiraUserName} AND worklogDate = ${date}`;
+    const jql = `project = ${config.project} AND worklogAuthor = ${config.userName} AND worklogDate = ${date}`;
     unirest.get('https://winedock.atlassian.net/rest/api/latest/search')
         .auth(config.jiraAuth)
         .headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
@@ -55,9 +55,9 @@ function findWorklogsFromIssues(issues, date) {
               allWorklogs = response.body.fields.worklog.worklogs;
             }
 
-            const ownersWorklogs = allWorklogs.filter((log) =>
-                log.author.key === config.jiraUserName && log.started.indexOf(date) === 0
-            );
+            const ownersWorklogs = allWorklogs.filter((log) => {
+              return log.author.emailAddress === config.email && log.started.indexOf(date) === 0
+            });
             issue.worklogs = ownersWorklogs.map((log) => log.timeSpentSeconds / 3600);
             issue.worklogsCreated = ownersWorklogs.map((log) => log.created);
             issue.worklogsComment = ownersWorklogs.map((log) => log.comment);

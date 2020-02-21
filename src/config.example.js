@@ -1,7 +1,8 @@
 
 module.exports = {
   jira: {
-    jiraUserName: 'USER',
+    userName: 'USER',
+    email: 'e@mail.com',
     project: 'PROJ',
     jiraAuth: {
       user: 'USER',
