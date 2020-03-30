@@ -32,14 +32,46 @@ jira.getWorklogs(date).then((worklogs) => {
 function mapJiraToKimai(issues) {
   Object.keys(issues).forEach((id) => {
     const issue = issues[id];
-    let mapKey = 'default';
-    if (issue.key in config.mapping) {
-      mapKey = issue.key;
+
+    if (config.mapping['keys'] && issue.key in config.mapping['keys']) {
+      Object.assign(issue, config.mapping['keys'][issue.key]);
     }
-    Object.assign(issue, config.mapping[mapKey]);
+    else if (config.mapping['customFields'] && matchCustomField(issue)) {
+      const configEntry = matchCustomField(issue);
+      Object.assign(issue, config.mapping['customFields'][configEntry.key]);
+    }
+    else if (config.mapping['default']) {
+      Object.assign(issue, config.mapping['default']);
+    }
+    else {
+      console.log('\n');
+      console.log('Jira issue could not be mapped to Kimai!');
+      console.log(issue);
+      console.log('\n');
+      return;
+    }
 
     issue.comment = createComment(issue);
   });
+}
+
+function matchCustomField(issue) {
+  const configEntries = Object.keys(config.mapping['customFields']).map(key => {
+    const parts = key.split('=');
+    return { key: key, field: parts[0], value: parts[1] };
+  });
+
+  let ndx = configEntries.length;
+  while (ndx--) {
+    const entry = configEntries[ndx];
+    if (issue.customFields[entry.field]) {
+      if (Array.isArray(issue.customFields[entry.field]) && issue.customFields[entry.field].includes(entry.value)) {
+        return entry;
+      }
+    }
+  }
+
+  return null;
 }
 
 function createComment(issue) {

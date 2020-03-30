@@ -7,8 +7,9 @@ setConfig = (c) => {
 
 function getWorklogs(date) {
   return new Promise((resolve) => {
-    const jql = `project = ${config.project} AND worklogAuthor = ${config.userName} AND worklogDate = ${date}`;
-    unirest.get('https://winedock.atlassian.net/rest/api/latest/search')
+    const jql = `project in (${config.projects.join(', ')}) AND worklogAuthor = ${config.userName} AND worklogDate = ${date}`;
+    const url = 'https://winedock.atlassian.net/rest/api/latest/search?expand=' + config.customFields.join(',');
+    unirest.get(url)
         .auth(config.jiraAuth)
         .headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
         .query({ "jql": jql })
@@ -29,11 +30,18 @@ function getWorklogs(date) {
 function getIssueList(data) {
   const issues = {};
   for (let i = 0; i < data.issues.length; i++) {
-    issues['id_' + data.issues[i].id] = {
+    const issueData = {
       key: data.issues[i].key,
       summary: data.issues[i].fields.summary,
       url: data.issues[i].self,
+      customFields: {},
     };
+
+    config.customFields.forEach((fieldName) => {
+      issueData.customFields[fieldName] = data.issues[i].fields[fieldName];
+    });
+
+    issues['id_' + data.issues[i].id] = issueData
   }
   return issues;
 }

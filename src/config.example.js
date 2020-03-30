@@ -3,7 +3,7 @@ module.exports = {
   jira: {
     userName: 'USER',
     email: 'e@mail.com',
-    project: 'PROJ',
+    projects: ['PROJ'],
     jiraAuth: {
       user: 'USER',
       pass: 'TOKEN',
@@ -21,13 +21,23 @@ module.exports = {
       projectId: 1,
       taskId: 1,
       label: 'SOME TEXT',
-      textPattern: '[key]#[summary]#'
+      textPattern: '[key] [summary]'
     },
-    'PROJ-1': {
-      projectId: 1,
-      taskId: 2,
-      label: 'SOME TEXT',
-      textPattern: '[key]'
+    keys: {
+      'PROJ-1': {
+        projectId: 1,
+        taskId: 2,
+        label: 'SOME TEXT',
+        textPattern: '[key]'
+      }
+    },
+    customFields: {
+      'labels=TEST': {
+        projectId: 1,
+        taskId: 2,
+        label: 'SOME TEXT',
+        textPattern: 'Has labels: [labels]'
+      }
     }
   }
 };
