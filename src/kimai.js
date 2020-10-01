@@ -64,6 +64,7 @@ function addWorklog(worklog, from, to, description = '') {
       "description": description,
       "commentType": 0,
       "statusId": 1,
+      "trackingNumber": worklog.key
     },
     "doUpdate": false
   };
