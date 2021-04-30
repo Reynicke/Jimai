@@ -8,7 +8,7 @@ setConfig = (c) => {
 function getWorklogs(date) {
   return new Promise((resolve) => {
     const jql = `project in (${config.projects.join(', ')}) AND worklogAuthor = ${config.userName} AND worklogDate = ${date}`;
-    const url = 'https://winedock.atlassian.net/rest/api/latest/search?expand=' + config.customFields.join(',');
+    const url = config.url + '/rest/api/latest/search?expand=' + config.customFields.join(',');
     unirest.get(url)
         .auth(config.jiraAuth)
         .headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
@@ -83,7 +83,6 @@ function findWorklogsFromIssues(issues, date) {
 }
 
 function getAllWorklogs(issue) {
-  // GET https://winedock.atlassian.net/rest/api/latest/issue/bps-154/worklog
   return new Promise((resolve) => {
     unirest.get(issue.url + '/worklog')
         .auth(config.jiraAuth)

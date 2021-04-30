@@ -8,7 +8,9 @@ module.exports = {
       user: 'USER',
       pass: 'TOKEN',
       sendImmediately: true
-    }
+    },
+    url: 'https://COMPANY.atlassian.net',
+    customFields: []
   },
 
   kimai: {
