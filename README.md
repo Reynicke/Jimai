@@ -3,6 +3,8 @@
 ## Introduction
 Jimai is a node based CLI tool to transfer worklogs of a single day from Jira to Kimai. 
 
+Attention: It connects to Kimai 1 (current version ist 2.x, see https://www.kimai.org/documentation/versions.html)!
+
 ## Setup
 1. Get clone or download this repo
 2. Run `npm install` or `yarn` to install dependencies
